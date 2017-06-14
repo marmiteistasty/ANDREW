@@ -1,0 +1,72 @@
+import javax.swing.*;
+import java.awt.*;
+import java.io.*; 
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+
+
+
+
+
+
+class instructionsPanel extends JPanel{
+
+   BufferedImage instructions=null;
+    
+    JButton newgameButton = new JButton("New Game");
+    //newgameButton.addActionListener(new StartButtonListener());
+    
+    
+    JButton instructionButton = new JButton("Instructions");
+   // instructionButton.addActionListener(new instructionsButtonListener());
+    
+    JButton quitButton = new JButton("Quit Game");
+   // quitButton.addActionListener(new QuitListener());
+     
+    
+    //constructor
+    public instructionsPanel() { 
+        setPreferredSize(new Dimension(1600,1100));
+     //setOpaque(false);
+      setFocusable(true);
+      requestFocusInWindow();
+   
+        try {
+      instructions = ImageIO.read(new File("instructions.png"));
+      
+      
+      
+    } catch(Exception E) { 
+      System.out.println("error loading picture!");
+    }
+    
+    this.add(newgameButton);
+  this.add(instructionButton);
+     this.add(quitButton);
+    }
+    
+    
+    public void paintComponent(Graphics g) { 
+      super.paintComponent(g); //required to ensure the panel si correctly redrawn
+   
+   
+      //update the content
+      //draw the screen
+   g.drawImage(instructions,0,0,null);
+       
+      
+      //request a repaint
+     
+      repaint();
+    }
+    
+    
+    
+  
+      
+      
+}

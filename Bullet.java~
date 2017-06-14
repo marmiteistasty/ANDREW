@@ -1,0 +1,105 @@
+/*Bullets.java
+ * To create bullets for the guns when shot
+ * Author: Naymul Mohammed
+ */
+
+import java.awt.image.*;
+import java.awt.Graphics;
+import java.awt.*;
+import java.io.*; 
+import javax.imageio.*;
+import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
+
+class Bullet extends Entity{
+  
+  private double changeX;
+  private double changeY;
+  private double endingX;
+  private double endingY;
+  private boolean alive;
+  private BufferedImage bullet;
+  private int damage;
+  private int speed;
+  
+  
+  
+  Bullet(double x, double y, double endingX, double endingY,int type){
+    super(x,y,new Rectangle((int)x, (int)y, 25, 25));
+    
+    this.endingX=endingX;
+    this.endingY=endingY;
+    this.loadSprites();
+    this.alive=true;
+    if(type==1){
+     this.damage=500;
+     this.speed=2000;
+    }else if(type==2){
+      this.damage=1000;
+      this.speed=2500;
+    }else if(type==3){
+      this.damage=1000;
+      this.speed=3000;
+    }
+    
+  }
+  
+  public void loadSprites() { 
+    try {
+      bullet = ImageIO.read(new File("bullet.png"));  
+    } catch(Exception e) { System.out.println("error loading sprite");};
+  }
+  
+  
+  public void draw(Graphics g) { 
+    if(alive){
+      Graphics2D g2d=(Graphics2D)g;
+      AffineTransform rotateBullet=new AffineTransform();
+   
+      rotateBullet.translate(this.getX(),this.getY());
+      
+      
+       rotateBullet.rotate(Math.atan2(this.getY()-this.endingY,this.getX()-this.endingX) );
+      g2d.drawImage(bullet,rotateBullet,null);  
+    }
+  }
+  
+  public void update(Graphics g, double timeElapsed,ArrayList<Rectangle> walls) { 
+    
+    changeX = (endingX - this.getX());
+    changeY= (endingY - this.getY());
+    double  direction = Math.atan2(changeY,changeX); // Math.atan2(deltaY, deltaX) does the same thing but checks for deltaX being zero to prevent divide-by-zero exceptions
+    
+    //Checks to see if the bullet is within the game borders
+    if( ((this.getX()>=0) && (this.getX()<=1600)) && this.getY()>=0 && this.getY()<=900   )  {
+      
+      this.setX(this.getX() +(timeElapsed*speed* Math.cos(direction)));
+      this.endingX=(this.getX() + (timeElapsed*speed* Math.cos(direction)));
+      this.setY(this.getY() + (timeElapsed*speed*Math.sin(direction)));
+      this.endingY=(this.getY() + (timeElapsed*speed*Math.sin(direction)));
+      
+      for (int r = 0; r < walls.size(); r++){
+        if(this.getBox().intersects(walls.get(r))){
+        this.alive=false;
+        }
+      }
+      
+      this.draw(g);  
+    }else{ 
+      this.alive=false; 
+    }
+    this.setBox((int)this.getX(),(int)this.getY());
+  }
+  
+  public boolean getAlive(){
+    return this.alive; 
+  }
+  
+  public void setAlive(boolean alive){
+    this.alive=alive; 
+  }
+  
+  public int getDamage(){
+    return this.damage;   
+  }  
+}

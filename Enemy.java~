@@ -1,0 +1,109 @@
+/*Enemy.java
+ * yea
+ */
+
+import java.awt.*;
+import java.io.*; 
+import java.awt.image.*;
+import javax.imageio.*;
+import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
+
+class Enemy extends Entity{
+  
+  private  BufferedImage enemySprite;   
+  private Weapon enemyGun;
+  private int health;
+  private double xChange=0;
+  private double yChange=0;
+  private double distance=9999;
+  
+  
+  Enemy(double x, double y, int health, Weapon enemyGun ){
+    super(x,y,new Rectangle((int)x, (int)y, 35, 35));
+    loadSprites();
+    this.health=health;
+    this.enemyGun=enemyGun; 
+  }
+  
+  
+  public void loadSprites() { 
+    try {
+      enemySprite = ImageIO.read(new File("enemySprite.png"));
+    } catch(Exception e) { System.out.println("error loading sprite");};
+  }
+  
+  public void draw(Graphics g, double x, double y) {   
+    
+    Graphics2D g2d=(Graphics2D)g;
+    AffineTransform rotateEnemy=new AffineTransform();
+    
+    rotateEnemy.translate(this.getX(),this.getY());
+    rotateEnemy.rotate(Math.atan2(this.getY()-y,this.getX()-x));
+    rotateEnemy.translate(-enemySprite.getWidth()/2,-enemySprite.getHeight()/2);
+    g2d.drawImage(enemySprite,rotateEnemy,null);
+    
+    if(!(this.enemyGun==null)){
+      this.enemyGun.draw(g,x,y,this.getX(),this.getY());
+    }  
+  }
+  
+  public void move(double playerX, double playerY, double timeElapsed,ArrayList<Rectangle> walls) { 
+    
+    distance =Math.abs( Math.sqrt(Math.pow((playerX-this.getX()), 2) + Math.pow((playerY-this.getY()), 2)));
+    
+    double originalX=this.getX();
+    double originalY=this.getY();
+    
+    if(distance<=500){
+      
+      if(playerX==this.getX()){
+        
+        xChange=0; 
+      }else{ 
+        xChange=-1;   
+      }
+      
+      if(playerY==this.getY()){      
+        yChange=0; 
+      }else{   
+        yChange=-1;  
+      }
+      
+      
+      
+      this.setY(this.getY()+this.yChange*((250*timeElapsed)*Math.sin(Math.atan2(this.getY()-playerY,this.getX()-playerX))));
+      this.setX(this.getX()+ this.xChange*((250*timeElapsed)*Math.cos(Math.atan2(this.getY()-playerY,this.getX()-playerX)))); 
+      this.setBox((int)this.getX(),(int)this.getY());
+      xChange=0;
+      yChange=0;
+      
+      for (int r = 0; r < walls.size(); r++){
+        if(this.getBox().intersects(walls.get(r))){
+          this.setY(originalY);
+          this.setX(originalX);
+          this.setBox((int)originalX,(int)originalY);
+        }
+      } 
+    }
+  }
+  
+  public boolean shoot() { 
+    if(this.enemyGun.getAmmo()>0 && this.distance<=500){
+      return true; 
+    }else{
+      return false; 
+    }  
+  }
+  
+  public Weapon getWeapon(){
+    return this.enemyGun; 
+  }
+  
+  public void lowerHealth(int amount){ 
+    this.health=this.health-amount; 
+  }
+  public int getHealth(){
+    return this.health; 
+  }
+}

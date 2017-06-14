@@ -1,0 +1,17 @@
+class hatSelection{
+      BufferedImage hat1=null, hat2=null,hat3=null,hat4=null;
+      
+      
+  public hatSelection(){
+  try {
+      hat1 = ImageIO.read(new File("hat1.png"));
+      hat2 = ImageIO.read(new File("hat2.png"));
+      hat3 = ImageIO.read(new File("hat3.png"));
+      hat4 = ImageIO.read(new File("hat3.png"));
+      
+      
+    } catch(Exception E) { 
+      System.out.println("error loading picture!");
+    }
+
+  }

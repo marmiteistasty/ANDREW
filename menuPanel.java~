@@ -1,0 +1,52 @@
+import javax.swing.*;
+import java.awt.*;
+import java.io.*; 
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+
+
+class menuPanel extends JPanel{
+
+   BufferedImage menu=null;
+    
+    //constructor
+    public menuPanel() { 
+        setPreferredSize(new Dimension(1600,1100));
+     //setOpaque(false);
+      setFocusable(true);
+      requestFocusInWindow();
+   
+        try {
+      menu = ImageIO.read(new File("menu.png"));
+      
+      
+      
+    } catch(Exception E) { 
+      System.out.println("error loading picture!");
+    }
+    
+  
+     
+    }
+    
+    
+    public void paintComponent(Graphics g) { 
+      super.paintComponent(g); //required to ensure the panel si correctly redrawn
+   
+   
+      //update the content
+      //draw the screen
+   g.drawImage(menu,0,0,null);
+       
+      
+      //request a repaint
+     
+    //repaint();
+    }
+    
+    
+    
+  
+      
+      
+}

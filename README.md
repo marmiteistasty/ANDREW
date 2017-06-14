@@ -1,2 +1,1 @@
-# ANDREW
-WHY IS IT LIKE THIS
+# scrap
